@@ -249,6 +249,7 @@ public class Main {
 
     // -------------------- Tiny domain types --------------------
 
+    /*
     static class Student {
         String id, name, email;
         Student(String id, String name, String email) { this.id=id; this.name=name; this.email=email; }
@@ -260,6 +261,8 @@ public class Main {
         Course(String code, String title, int capacity) { this.code=code; this.title=title; this.capacity=capacity; }
     }
 
+     */
+
     // -------------------- Utils --------------------
     private static void print(String s){ System.out.print(s); }
     private static void println(String s){ System.out.println(s); }
@@ -269,9 +272,16 @@ public class Main {
     public record Student(String id, String name, String email) {
         @Override
         public String toString() {
-            return id + "|" + name + "|" + email;
+            return id + " " + name + "<" + email + ">";
         }
     }
-    public record Course(String code, String title, int capacity) {
+    public record Course(String code, String title, int capacity, List<String> roster, List<String> waitlist) {
+        public Course(String code, String title, int capacity) {
+            this(code, title, capacity, new ArrayList<>(), new ArrayList<>());
+        }
+        @Override
+        public String toString() {
+            return code + "" + title + " cap = " + capacity+ " enrolleted = "+ roster.size() + " wait = " + waitlist.size();
+        }
     }
 }
