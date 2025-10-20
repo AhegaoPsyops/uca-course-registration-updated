@@ -3,6 +3,7 @@ package edu.uca.registration;
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.nio.file.*;
 
 public class Main {
     // ---- Global state (intentionally messy for refactor) ----
@@ -82,8 +83,30 @@ public class Main {
     }
 
     private static void enrollUI(Scanner sc) {
-        print("Student ID: ");
-        String sid = sc.nextLine().trim();
+        // Updated with listing students and courses for error handling
+        if(students.isEmpty()) {
+            println("No students in database. ");
+            return;
+        } else if (courses.isEmpty()) {
+            println("No courses in database. ");
+            return;
+        }
+        // list students for student IDs
+        listStudents();
+        // error handling for students
+        boolean run = true;
+        String sid = "Temp00";
+        while (run) {
+            print("Student ID: ");
+            sid = sc.nextLine().trim();
+            if (students.containsKey(sid)) {
+                run = false;
+            }else{
+                println("Student does not exist!");
+            }
+        }
+        // list courses for course codes
+        listCourses();
         print("Course Code: ");
         String cc = sc.nextLine().trim();
         Course c = courses.get(cc);
@@ -103,8 +126,30 @@ public class Main {
     }
 
     private static void dropUI(Scanner sc) {
-        print("Student ID: ");
-        String sid = sc.nextLine().trim();
+
+        // Updated with listing students and courses for error handling
+        if(students.isEmpty()) {
+            println("No students in database. ");
+            return;
+        } else if (courses.isEmpty()) {
+            println("No courses in database. ");
+            return;
+        }
+        // list students for student IDs
+        listStudents();
+        // error handling for students
+        boolean run = true;
+        String sid = "Temp00";
+        while (run) {
+            print("Student ID: ");
+            sid = sc.nextLine().trim();
+            if (students.containsKey(sid)) {
+                run = false;
+            }else{
+                println("Student does not exist!");
+            }
+        }
+        listCourses();
         print("Course Code: ");
         String cc = sc.nextLine().trim();
         Course c = courses.get(cc);
@@ -283,5 +328,28 @@ public class Main {
         public String toString() {
             return code + "" + title + " cap = " + capacity+ " enrolleted = "+ roster.size() + " wait = " + waitlist.size();
         }
+    }
+
+    // if interface
+    public interface StudentRepository {
+        void load();
+        void save();
+        void add(Student student);
+        Optional<Student> findById(String id);
+        boolean exists(String id);
+        Collection<Student> findAll();
+    }
+
+    public interface CourseRepository {
+        void load();
+        void save();
+        void add(Course course);
+        Optional<Course> findByCode(String code);
+        boolean exists(String code);
+        Collection<Course> findAll();
+    }
+    public interface EnrollmentRepository {
+        void load(Collection<Course> courses);
+        void save(Collection<Course> courses);
     }
 }
